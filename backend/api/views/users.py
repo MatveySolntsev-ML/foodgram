@@ -1,9 +1,14 @@
+from djoser.views import UserViewSet as DjoserUserViewSet
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from api.serializers.users import AvatarSerializer
+
+
+class UserViewSet(DjoserUserViewSet):
+    http_method_names = ["get", "post", "head", "options"]
 
 
 class AvatarView(APIView):

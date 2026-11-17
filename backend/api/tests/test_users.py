@@ -60,3 +60,24 @@ class AvatarEndpointTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.user.refresh_from_db()
         self.assertFalse(bool(self.user.avatar))
+
+
+class UserDetailWriteProtectionTests(APITestCase):
+    def setUp(self):
+        self.victim = User.objects.create_user(
+            username="victim", email="victim@example.com",
+            password="VictimPass123", first_name="V", last_name="I",
+        )
+
+    def test_unauthenticated_patch_is_not_allowed(self):
+        response = self.client.patch(
+            f"/api/users/{self.victim.id}/",
+            {"first_name": "HACKED", "email": "pwned@evil.com"},
+            format="json",
+        )
+        self.assertEqual(
+            response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED,
+        )
+        self.victim.refresh_from_db()
+        self.assertEqual(self.victim.first_name, "V")
+        self.assertEqual(self.victim.email, "victim@example.com")
