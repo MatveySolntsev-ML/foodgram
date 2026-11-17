@@ -13,6 +13,7 @@ from api.pagination import LimitPageNumberPagination
 from api.permissions import IsAuthorOrReadOnly
 from api.serializers.recipes import RecipeReadSerializer, RecipeWriteSerializer
 from api.serializers.subscriptions import RecipeMinifiedSerializer
+from api.views.short_links import short_code_for
 from recipes.models import Favorite, Recipe, RecipeIngredient, ShoppingCart
 
 
@@ -98,8 +99,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=["get"], url_path="get-link")
     def get_link(self, request, pk=None):
-        from api.views.short_links import short_code_for
-        request = self.request
+        get_object_or_404(Recipe, pk=pk)
         code = short_code_for(int(pk))
         link = request.build_absolute_uri(f"/s/{code}/")
         return Response({"short-link": link})

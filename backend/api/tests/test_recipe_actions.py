@@ -42,6 +42,10 @@ class RecipeActionTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("short-link", response.data)
 
+    def test_get_link_nonexistent_recipe_returns_404(self):
+        response = self.client.get("/api/recipes/999999/get-link/")
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
     def test_download_shopping_cart_aggregates_amounts(self):
         salt = Ingredient.objects.create(name="соль", measurement_unit="г")
         other_recipe = Recipe.objects.create(
