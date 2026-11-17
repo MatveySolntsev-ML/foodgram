@@ -12,7 +12,9 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument(
             "--path",
-            default=str(settings.BASE_DIR.parent / "data" / "ingredients.json"),
+            default=str(
+                settings.BASE_DIR.parent / "data" / "ingredients.json"
+            ),
         )
 
     def handle(self, *args, **options):
@@ -27,6 +29,7 @@ class Command(BaseCommand):
             created += was_created
         self.stdout.write(
             self.style.SUCCESS(
-                f"Processed {len(items)} rows, created {created} new ingredients",
+                f"Processed {len(items)} rows, "
+                f"created {created} new ingredients",
             )
         )
