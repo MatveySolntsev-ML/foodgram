@@ -3,8 +3,11 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
+from api.views.short_links import resolve_short_link
+
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("s/<str:code>/", resolve_short_link, name="short-link-redirect"),
     path("api/", include("api.urls")),
 ]
 
