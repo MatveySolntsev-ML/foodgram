@@ -101,3 +101,17 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "api.pagination.LimitPageNumberPagination",
     "PAGE_SIZE": 6,
 }
+
+DJOSER = {
+    "LOGIN_FIELD": "email",
+    "USER_CREATE_PASSWORD_RETYPE": False,
+    "SERIALIZERS": {
+        "user_create": "api.serializers.users.CustomUserCreateSerializer",
+        "user": "api.serializers.users.UserSerializer",
+        "current_user": "api.serializers.users.UserSerializer",
+    },
+    "PERMISSIONS": {
+        "user": ("rest_framework.permissions.AllowAny",),
+        "user_list": ("rest_framework.permissions.AllowAny",),
+    },
+}
