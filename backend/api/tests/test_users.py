@@ -73,6 +73,15 @@ class AvatarEndpointTests(APITestCase):
         self.user.refresh_from_db()
         self.assertFalse(bool(self.user.avatar))
 
+    def test_set_avatar_rejects_disallowed_claimed_extension(self):
+        svg_payload = PIXEL.replace("data:image/png", "data:image/svg+xml")
+        response = self.client.put(
+            "/api/users/me/avatar/", {"avatar": svg_payload}, format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.user.refresh_from_db()
+        self.assertFalse(bool(self.user.avatar))
+
 
 class UserDetailWriteProtectionTests(APITestCase):
     def setUp(self):
