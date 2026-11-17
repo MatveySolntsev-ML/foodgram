@@ -35,6 +35,12 @@ class UserRegistrationTests(APITestCase):
         self.assertIn("auth_token", login.data)
 
 
+class CurrentUserEndpointTests(APITestCase):
+    def test_me_requires_authentication(self):
+        response = self.client.get("/api/users/me/")
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+
 class AvatarEndpointTests(APITestCase):
     def setUp(self):
         self.user = User.objects.create_user(
@@ -51,6 +57,12 @@ class AvatarEndpointTests(APITestCase):
         self.assertIn("avatar", response.data)
         self.user.refresh_from_db()
         self.assertTrue(bool(self.user.avatar))
+
+    def test_set_avatar_without_avatar_field_is_bad_request(self):
+        response = self.client.put(
+            "/api/users/me/avatar/", {}, format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_delete_avatar(self):
         self.client.put(

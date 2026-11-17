@@ -28,6 +28,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return RecipeReadSerializer
         return RecipeWriteSerializer
 
+    def partial_update(self, request, *args, **kwargs):
+        # Foodgram's spec always requires the full recipe payload
+        # (ingredients, name, text, cooking_time) even on PATCH; the
+        # frontend never sends a true partial update.
+        kwargs["partial"] = False
+        return self.update(request, *args, **kwargs)
+
     def get_queryset(self):
         queryset = super().get_queryset()
         params = self.request.query_params

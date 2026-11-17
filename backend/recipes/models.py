@@ -1,5 +1,6 @@
 from django.core.validators import MinValueValidator
 from django.db import models
+from django.db.models.functions import Lower
 
 from users.models import User
 
@@ -9,7 +10,7 @@ class Ingredient(models.Model):
     measurement_unit = models.CharField("Единица измерения", max_length=64)
 
     class Meta:
-        ordering = ["name"]
+        ordering = [Lower("name")]
         constraints = [
             models.UniqueConstraint(
                 fields=["name", "measurement_unit"], name="unique_ingredient",

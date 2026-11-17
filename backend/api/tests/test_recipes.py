@@ -106,6 +106,22 @@ class RecipeCRUDTests(APITestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
+    def test_patch_without_ingredients_field_is_bad_request(self):
+        recipe = Recipe.objects.create(
+            author=self.author, name="Суп", text="x",
+            cooking_time=10, image="r.jpg",
+        )
+        self.client.force_authenticate(user=self.author)
+        response = self.client.patch(
+            f"/api/recipes/{recipe.id}/",
+            {
+                "image": PIXEL, "name": "Новый суп", "text": "x",
+                "cooking_time": 5,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
     def test_delete_only_by_author(self):
         recipe = Recipe.objects.create(
             author=self.author, name="Суп", text="x",

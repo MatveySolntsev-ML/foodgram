@@ -49,3 +49,14 @@ class RecipeModelTests(TestCase):
         ShoppingCart.objects.create(user=self.author, recipe=recipe)
         with self.assertRaises(IntegrityError):
             ShoppingCart.objects.create(user=self.author, recipe=recipe)
+
+
+class IngredientOrderingTests(TestCase):
+    def test_default_ordering_is_case_insensitive(self):
+        # A capitalized name should not sort before a lowercase name
+        # that is alphabetically earlier (matches case-insensitive
+        # collation, e.g. PostgreSQL's default `lower()` behavior).
+        Ingredient.objects.create(name="Zebra", measurement_unit="г")
+        Ingredient.objects.create(name="apple", measurement_unit="г")
+        names = list(Ingredient.objects.values_list("name", flat=True))
+        self.assertEqual(names, ["apple", "Zebra"])
