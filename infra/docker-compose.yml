@@ -23,6 +23,12 @@ services:
       - static_data:/app/static
       - media_data:/app/media
       - ../data:/data:ro
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import socket; socket.create_connection(('localhost', 8000), timeout=2)\""]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
 
   frontend:
     container_name: foodgram-front
@@ -42,8 +48,10 @@ services:
       - static_data:/var/html/static
       - media_data:/var/html/media
     depends_on:
-      - backend
-      - frontend
+      backend:
+        condition: service_healthy
+      frontend:
+        condition: service_completed_successfully
 
 volumes:
   pg_data:
