@@ -37,8 +37,8 @@ class Command(BaseCommand):
                 "last_name": "Шеф",
             },
         )
-        if not author.has_usable_password():
-            author.set_password("DemoChefPass123")
+        if author.has_usable_password():
+            author.set_unusable_password()
             author.save()
 
         with open(options["path"], encoding="utf-8") as f:
